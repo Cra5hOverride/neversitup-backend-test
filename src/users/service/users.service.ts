@@ -21,14 +21,14 @@ export class UsersService {
 
     if (duplicateEmail) {
       throw new HttpException(
-        { status: false, message: 'อีเมลซ้ำกันในระบบ' },
+        { status: false, message: 'Duplicate email' },
         HttpStatus.CONFLICT,
       );
     }
 
     if (duplicateUsername) {
       throw new HttpException(
-        { status: false, message: 'ชื่อผู้ใช้งานซ้ำกันในระบบ' },
+        { status: false, message: 'Duplicate username' },
         HttpStatus.CONFLICT,
       );
     }

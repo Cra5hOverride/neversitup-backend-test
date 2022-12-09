@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { Order, OrderDocument } from '../schemas/order.schema';
@@ -23,12 +23,22 @@ export class OrdersService {
 
   async create(createOrderDto: CreateOrderDto) {
     const product = await this.productService.findOne(createOrderDto.product);
+
+    if(product.stock < createOrderDto.quantity){
+      throw new HttpException(
+        { status: false, message: 'Not enough product' },
+        HttpStatus.CONFLICT,
+      );
+    }
     
     let order = new Order();
     Object.assign(order, createOrderDto);
     order.product = product;
     order.status = OrderStatus.Waiting;
     order.total_price = (product.price * order.quantity);
+
+    product.stock -= order.quantity;
+    product.save();
 
     return await this.orderModel.create(order);
   }

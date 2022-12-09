@@ -16,6 +16,9 @@ export class Product {
   @Prop({default: 0})
   price: number;
 
+  @Prop({default: 0})
+  stock: number;
+
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
