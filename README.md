@@ -29,7 +29,8 @@
 ## Installation
 
 ```bash
-$ npm install
+# for Swagger 
+$ npm i --force
 ```
 
 ## Running the app
