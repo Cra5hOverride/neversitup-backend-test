@@ -56,6 +56,7 @@ export class OrdersService {
       .populate({
         path: 'product',
         options: { withDeleted: true },
+        select: 'name price'
       })
       .sort({ name: 1 })
       .skip((page - 1) * limit)

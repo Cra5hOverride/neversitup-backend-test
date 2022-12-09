@@ -17,7 +17,7 @@ export class ProductsService {
     return await this.productModel.create(createProductDto);;
   }
 
-  async findAll(page: number, limit: number, query: string) {
+  async findAll(page: number, limit: number, query: string) {  
     const total = await this.productModel
       .count({
          name: new RegExp(query, 'i'),
@@ -27,6 +27,7 @@ export class ProductsService {
       .find({
         name: new RegExp(query, 'i'),
       })
+      .select('name price stock')
       .sort({ name: 1 })
       .skip((page - 1) * limit)
       .limit(limit)
