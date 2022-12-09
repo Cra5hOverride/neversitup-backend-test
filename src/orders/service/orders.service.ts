@@ -34,7 +34,6 @@ export class OrdersService {
   }
 
   async findAll(userid: any, page: number, limit: number) {
-    
     const total = await this.orderModel
       .count({
         user: userid
@@ -62,8 +61,7 @@ export class OrdersService {
   }
 
   async findOne(userid: any, id: string) {
-    
-    return await this.orderModel.find({
+    return await this.orderModel.findOne({
       _id: id,
       user: userid
     })
@@ -75,11 +73,11 @@ export class OrdersService {
   }
 
   async cancel(userid: any, id: string) {
-    const order = await this.orderModel.find({
+    const order = await this.orderModel.findOne({
       _id: id,
       user: userid
     })
     order.status = OrderStatus.Cancel;
-    return order.save();
+    return await order.save();
   }
 }

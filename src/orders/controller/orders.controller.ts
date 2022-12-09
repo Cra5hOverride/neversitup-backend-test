@@ -43,5 +43,14 @@ export class OrdersController {
     return this.ordersService.findOne(userid ,id);
   }
 
+  @Get('cancel/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT')
+  @HttpCode(HttpStatus.OK)
+  cancel(@Req() req: any, @Param('id') id: string) {
+    const { user } = req;
+    const userid = user.userid;
+    return this.ordersService.cancel(userid ,id);
+  }
 
 }
