@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { Model } from 'mongoose-delete';
@@ -15,12 +15,30 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
+
+    const duplicateEmail = await this.checkDuplicateEmail(createUserDto.email);
+    const duplicateUsername = await this.checkDuplicateUsername(createUserDto.username);
+
+    if (duplicateEmail) {
+      throw new HttpException(
+        { status: false, message: 'อีเมลซ้ำกันในระบบ' },
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    if (duplicateUsername) {
+      throw new HttpException(
+        { status: false, message: 'ชื่อผู้ใช้งานซ้ำกันในระบบ' },
+        HttpStatus.CONFLICT,
+      );
+    }
+
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     return await this.userModel.create(createUserDto);;
   }
 
   async findAll() {
-    return await this.userModel.find();;
+    return await this.userModel.find();
   }
 
   async findOne(id: string) {
@@ -42,4 +60,27 @@ export class UsersService {
     const user = await this.userModel.findById(id);
     return  user.delete();
   }
+
+  async checkDuplicateEmail(email: string) {
+    const user = await this.userModel.findOneWithDeleted({
+      email: email,
+    });
+
+    if (user) {
+      return true;
+    }
+    return false;
+  }
+
+  async checkDuplicateUsername(username: string) {
+    const user = await this.userModel.findOneWithDeleted({
+      username: username,
+    });
+
+    if (user) {
+      return true;
+    }
+    return false;
+  }
+
 }
