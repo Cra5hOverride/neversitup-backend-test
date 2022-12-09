@@ -32,7 +32,7 @@ export class UsersService {
         HttpStatus.CONFLICT,
       );
     }
-
+    createUserDto.username = createUserDto.username.toLowerCase();
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     return await this.userModel.create(createUserDto);;
   }
