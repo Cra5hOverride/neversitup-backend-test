@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpCode, HttpStatus, Req, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpCode, HttpStatus, Req, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateOrderDto } from '../dto/create-order.dto';
@@ -13,6 +13,7 @@ export class OrdersController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT')
+  @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(HttpStatus.OK)
   create(@Req() req: any, @Body() createOrderDto: CreateOrderDto) {
     const { user } = req;
@@ -23,6 +24,7 @@ export class OrdersController {
   @Get('history')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT')
+  @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(HttpStatus.OK)
   findAll(@Req() req: any, @Query() paginationDto: PaginationDto) {
     const { user } = req;
