@@ -14,7 +14,7 @@ export class Product {
   description: string;
 
   @Prop({default: 0})
-  price: string;
+  price: number;
 
 }
 
